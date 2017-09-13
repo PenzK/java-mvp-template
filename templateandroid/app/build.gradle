@@ -1,0 +1,110 @@
+buildscript {
+    repositories {
+        maven { url 'https://maven.fabric.io/public' }
+    }
+    dependencies {
+        // The Fabric Gradle plugin uses an open ended version to react
+        // quickly to Android tooling updates
+        classpath 'io.fabric.tools:gradle:1.21.6'
+    }
+}
+
+apply plugin: 'com.android.application'
+apply plugin: 'io.fabric'
+apply plugin: 'com.neenbedankt.android-apt'
+apply plugin: "realm-android"
+
+apply from: '../gradle.properties'
+
+repositories {
+    maven { url "http://dl.bintray.com/populov/maven" }
+    maven { url 'https://maven.fabric.io/public' }
+    mavenCentral()
+    mavenLocal()
+}
+
+static def getDate() {
+    return new Date().format('dd/MM/yyyy--HH:mm')
+}
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.3"
+
+    defaultConfig {
+        applicationId "com.yalantis"
+        minSdkVersion 16
+        targetSdkVersion 25
+        versionCode System.getenv("BUILD_NUMBER") as Integer ?: 1
+        versionName "1.0"
+        multiDexEnabled true
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/services/javax.annotation.processing.Processor'
+        exclude "META-INF/rxjava.properties"
+
+    }
+
+    
+    buildTypes {
+        debug {
+            minifyEnabled false
+            ext.enableCrashlytics = false
+        }
+    }
+
+    lintOptions {
+        abortOnError false
+    }
+}
+dependencies {
+    compile fileTree(dir: "libs", include: ["*.jar"])
+
+    //Realm
+    apt 'dk.ilios:realmfieldnameshelper:1.1.0'
+
+    // Android
+    compile "com.android.support:appcompat-v7:$rootProject.ext.android_support"
+    compile "com.android.support:design:$rootProject.ext.android_support"
+
+    // REST
+    compile "com.squareup.retrofit2:retrofit:$rootProject.ext.retrofit"
+    compile "com.squareup.retrofit2:converter-gson:$rootProject.ext.retrofit"
+    compile "com.squareup.retrofit2:adapter-rxjava2:$rootProject.ext.retrofit"
+    compile "com.squareup.okhttp3:okhttp:$rootProject.ext.okhttp"
+    compile "com.squareup.okhttp3:logging-interceptor:$rootProject.ext.okhttp"
+
+    //Binding
+    compile "com.jakewharton:butterknife:$rootProject.ext.butterknife"
+    apt "com.jakewharton:butterknife-compiler:$rootProject.ext.butterknife"
+
+    // Rx
+    compile "io.reactivex.rxjava2:rxjava:$rootProject.ext.rxjava2"
+    compile "io.reactivex.rxjava2:rxandroid:2.0.1"
+    compile "com.jakewharton.rxbinding2:rxbinding:2.0.0"
+    compile 'com.trello.navi2:navi:2.0'
+
+    // Logging and Crash-reporting
+    compile "com.jakewharton.timber:timber:4.5.1"
+    compile("com.crashlytics.sdk.android:crashlytics:2.6.6@aar") {
+        transitive = true;
+    }
+
+    testCompile "junit:junit:4.12"
+}

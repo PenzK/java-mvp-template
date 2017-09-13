@@ -1,0 +1,25 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.3.2'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath "io.realm:realm-gradle-plugin:3.4.0"
+    }
+}
+
+allprojects {
+    repositories {
+        jcenter()
+        maven { url 'http://oss.sonatype.org/content/repositories/snapshots' }
+    }
+}
+
+ext {
+    android_support = '25.3.1'
+    retrofit = '2.3.0'
+    okhttp = '3.8.1'
+    butterknife = '8.6.0'
+    rxjava2 = '2.1.1'
+}
